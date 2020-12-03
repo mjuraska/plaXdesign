@@ -12,10 +12,6 @@
 #' @param iter the number of Monte-Carlo iterations applied for the \code{"simulation"} method (\eqn{10^3} by default)
 #' @param seed a seed of the random number generator supplied to \code{set.seed} for reproducibility
 #'
-#' @details
-#' The Wald test statistic used for evaluating waning VE in the placebo crossover design is
-#' \deqn{\frac{\{\log(1 - \widehat{VE}_2) - \log(1 - \widehat{VE}_1) \}}{\sqrt{\frac{1}{\widehat{\theta}_2 (1-\widehat{VE}_1)} + \frac{1}{\widehat{\theta}_2 (1-\widehat{VE}_2)}}}}.
-#'
 #' @return
 #' An object of class \code{plaXpower}, which is a data frame with the following columns:
 #' \itemize{

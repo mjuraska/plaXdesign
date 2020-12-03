@@ -57,10 +57,6 @@ An object of class \code{plaXpower}, which is a data frame with the following co
 \description{
 Considering two periods of participant follow-up with associated levels of vaccine efficacy \eqn{VE_1} and \eqn{VE_2}, \code{plaXpower} computes for both a placebo crossover and standard non-crossover design (i) power to reject the null hypothesis \eqn{H_0: VE_1 = VE_2} in favor of the one-sided alternative hypothesis of waning VE, i.e., \eqn{H_1: VE_1 > VE_2}, (ii) power to reject the null hypothesis \eqn{H_0: VE_2 \ge 0} in favor of the one-sided alternative hypothesis of vaccine harm, i.e., \eqn{H_1: VE_2 < 0}, and (iii) for each hypothesis test, the sample size ratio (placebo crossover/standard) required to achieve the same power. The event of interest is assumed to be rare, with the event count following a Poisson distribution in each arm and time period. The vaccine administered in period 2 is assumed to have equal VE as in period 1.
 }
-\details{
-The Wald test statistic used for evaluating waning VE in the placebo crossover design is
-\deqn{\frac{\{\log(1 - \widehat{VE}_2) - \log(1 - \widehat{VE}_1) \}}{\sqrt{\frac{1}{\widehat{\theta}_2 (1-\widehat{VE}_1)} + \frac{1}{\widehat{\theta}_2 (1-\widehat{VE}_2)}}}}.
-}
 \examples{
 # analytical method
 tab <- plaXpower(theta1=100,
