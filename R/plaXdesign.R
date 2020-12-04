@@ -3,8 +3,8 @@
 #' Considering two periods of participant follow-up with associated levels of vaccine efficacy \eqn{VE_1} and \eqn{VE_2}, \code{plaXpower} computes for both a placebo crossover and standard non-crossover design (i) power to reject the null hypothesis \eqn{H_0: VE_1 = VE_2} in favor of the one-sided alternative hypothesis of waning VE, i.e., \eqn{H_1: VE_1 > VE_2}, (ii) power to reject the null hypothesis \eqn{H_0: VE_2 \ge 0} in favor of the one-sided alternative hypothesis of vaccine harm, i.e., \eqn{H_1: VE_2 < 0}, and (iii) for each hypothesis test, the sample size ratio (placebo crossover/standard) required to achieve the same power. The event of interest is assumed to be rare, with the event count following a Poisson distribution in each arm and time period. The vaccine administered in period 2 is assumed to have equal VE as in period 1.
 #'
 #' @aliases print.plaXpower
-#' @param theta1 a numeric value specifying the Poisson mean event count in the original placebo arm in period 1 in the standard design. This mean count is assumed in all scenarios described by \code{ve1} and \code{ve2}.
-#' @param theta2 a numeric value specifying the Poisson mean event count in the original placebo arm in period 2 in the standard design. This mean count is assumed in all scenarios described by \code{ve1} and \code{ve2}.
+#' @param theta1 either a scalar or a numeric vector (same choise is required for both \code{theta1} and \code{theta2}) specifying the Poisson mean event count(s) in the original placebo arm in period 1 in the standard design. If a scalar is specified, the same mean count in period 1 is assumed in all scenarios described by \code{ve1} and \code{ve2}. If a vector, it must be of the same length as \code{ve1} and \code{ve2}, with matching components treated as a single trial scenario.
+#' @param theta2 either a scalar or a numeric vector specifying the Poisson mean event count in the original placebo arm in period 2 in the standard design. If a scalar is specified, the same mean count in period 2 is assumed in all scenarios described by \code{ve1} and \code{ve2}. If a vector, it must be of the same length as \code{ve1} and \code{ve2}, with matching components treated as a single trial scenario.
 #' @param ve1 a numeric vector specifying different scenarios of vaccine efficacy in period 1 defined as 1 minus the ratio (original vaccine/original placebo) of mean event counts
 #' @param ve2 a numeric vector specifying different scenarios of vaccine efficacy in period 2 defined as 1 minus the ratio (original vaccine/original placebo) of mean event counts. Vectors \code{ve1} and \code{ve2} must be of equal length, with matching components of \code{ve1} and \code{ve2} treated as a single trial scenario.
 #' @param method a character string specifying the computational method. The default option is \code{"analytical"}, which assumes that the mean event counts and VE levels in both arms and time periods and in both designs are known. The alternative option is \code{"simulation"}, which first randomly samples event counts from Poisson distributions defined by \code{theta1}, \code{theta2}, \code{ve1}, and \code{ve2}, and then uses the data to estimate VE and the variance. Only the first character of the method is necessary.
@@ -15,6 +15,8 @@
 #' @return
 #' An object of class \code{plaXpower}, which is a data frame with the following columns:
 #' \itemize{
+#' \item \code{theta1}: repeats the input argument \code{theta1}
+#' \item \code{theta2}: repeats the input argument \code{theta2}
 #' \item \code{ve1}: repeats the input argument \code{ve1}
 #' \item \code{ve2}: repeats the input argument \code{ve2}
 #' \item \code{ssRatioWaneXstd}: the sample size ratio (placebo crossover/standard) that ensures the same power to detect waning VE
@@ -52,13 +54,17 @@
 #'
 #' @export
 plaXpower <- function(theta1, theta2, ve1, ve2, method=c("analytical", "simulation"), alpha=0.025, iter=1e3, seed=NULL){
-  if (length(theta1)>1 || length(theta2)>1){ stop("Placebo mean event counts 'theta1' and 'theta2' must be scalars.") }
+  if (length(theta1)!=length(theta2)){ stop("Placebo mean event counts 'theta1' and 'theta2' must be of equal length.") }
   if (length(ve1)!=length(ve2)){ stop("Vectors 've1' and 've2' must be of equal length.") }
+  # if 'theta1' is not a scalar, check that it matches 've1'
+  if (length(theta1)>1){
+    if (length(theta1)!=length(ve1)){ stop("The vector pairs ('theta1' and 'theta2') and ('ve1' and 've2') must be of equal length.") }
+  }
 
   method <- match.arg(method)
 
   qZ<- qnorm(1 - alpha)
-  out <- data.frame(ve1=ve1, ve2=ve2)
+  out <- data.frame(theta1=theta1, theta2=theta2, ve1=ve1, ve2=ve2)
 
   if (method=="analytical"){
     # the sample size of the crossover design is greater by factor 'varRatioWaneXstd' or 'varRatioHarmXstd'
@@ -100,13 +106,18 @@ plaXpower <- function(theta1, theta2, ve1, ve2, method=c("analytical", "simulati
 
     if (!is.null(seed)){ set.seed(seed) }
 
+    if (length(theta1)==1){
+      theta1 <- rep(theta1, length(ve1))
+      theta2 <- rep(theta2, length(ve2))
+    }
+
     out2 <- lapply(1:length(ve1), function(i, theta1, theta2, ve1, ve2, iter, qZ){
       # first, simulate case counts
-      Y01 <- rpois(iter, theta1)
-      Y11 <- rpois(iter, theta1 * (1-ve1[i]))
-      Y12 <- rpois(iter, theta2 * (1-ve2[i]))
-      Y02 <- rpois(iter, theta2)
-      X02 <- rpois(iter, theta2 * (1-ve1[i]))
+      Y01 <- rpois(iter, theta1[i])
+      Y11 <- rpois(iter, theta1[i] * (1-ve1[i]))
+      Y12 <- rpois(iter, theta2[i] * (1-ve2[i]))
+      Y02 <- rpois(iter, theta2[i])
+      X02 <- rpois(iter, theta2[i] * (1-ve1[i]))
 
       # replace zeros with a small positive number
       # to avoid a zero in the denominator in the test statistics
@@ -140,7 +151,7 @@ plaXpower <- function(theta1, theta2, ve1, ve2, method=c("analytical", "simulati
     }, theta1=theta1, theta2=theta2, ve1=ve1, ve2=ve2, iter=iter, qZ=qZ)
 
     out <- data.frame(out, do.call(rbind, out2))
-    colnames(out)[-(1:2)] <- c("ssRatioWaneXstd", "ssRatioHarmXstd", "powerWaneX", "powerWaneStd", "powerHarmX", "powerHarmStd")
+    colnames(out)[-(1:4)] <- c("ssRatioWaneXstd", "ssRatioHarmXstd", "powerWaneX", "powerWaneStd", "powerHarmX", "powerHarmStd")
   }
 
   class(out) <- c("plaXpower", "data.frame")
@@ -156,6 +167,6 @@ print.plaXpower <- function(x, digits=2, ...){
   class(x) <- "data.frame"
   x$ve1 <- paste0(x$ve1 * 100, "%")
   x$ve2 <- paste0(x$ve2 * 100, "%")
-  x[, -(1:2)] <- format(round(x[, -(1:2)], digits=digits), nsmall=digits, scientific=FALSE)
+  x[, -(1:4)] <- format(round(x[, -(1:4)], digits=digits), nsmall=digits, scientific=FALSE)
   print(x)
 }

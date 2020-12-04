@@ -19,9 +19,9 @@ plaXpower(
 \method{print}{plaXpower}(x, digits = 2, ...)
 }
 \arguments{
-\item{theta1}{a numeric value specifying the Poisson mean event count in the original placebo arm in period 1 in the standard design. This mean count is assumed in all scenarios described by \code{ve1} and \code{ve2}.}
+\item{theta1}{either a scalar or a numeric vector (same choise is required for both \code{theta1} and \code{theta2}) specifying the Poisson mean event count(s) in the original placebo arm in period 1 in the standard design. If a scalar is specified, the same mean count in period 1 is assumed in all scenarios described by \code{ve1} and \code{ve2}. If a vector, it must be of the same length as \code{ve1} and \code{ve2}, with matching components treated as a single trial scenario.}
 
-\item{theta2}{a numeric value specifying the Poisson mean event count in the original placebo arm in period 2 in the standard design. This mean count is assumed in all scenarios described by \code{ve1} and \code{ve2}.}
+\item{theta2}{either a scalar or a numeric vector specifying the Poisson mean event count in the original placebo arm in period 2 in the standard design. If a scalar is specified, the same mean count in period 2 is assumed in all scenarios described by \code{ve1} and \code{ve2}. If a vector, it must be of the same length as \code{ve1} and \code{ve2}, with matching components treated as a single trial scenario.}
 
 \item{ve1}{a numeric vector specifying different scenarios of vaccine efficacy in period 1 defined as 1 minus the ratio (original vaccine/original placebo) of mean event counts}
 
@@ -44,6 +44,8 @@ plaXpower(
 \value{
 An object of class \code{plaXpower}, which is a data frame with the following columns:
 \itemize{
+\item \code{theta1}: repeats the input argument \code{theta1}
+\item \code{theta2}: repeats the input argument \code{theta2}
 \item \code{ve1}: repeats the input argument \code{ve1}
 \item \code{ve2}: repeats the input argument \code{ve2}
 \item \code{ssRatioWaneXstd}: the sample size ratio (placebo crossover/standard) that ensures the same power to detect waning VE

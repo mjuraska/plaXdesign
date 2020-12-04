@@ -3,7 +3,7 @@ Type: Package
 Title: Assessing Vaccine Durability and Harm Following Placebo Crossover in Two-Arm Vaccine Efficacy Trials
 Version: 0.1.0
 Authors@R: c(person("Dean", "Follmann", email="dfollmann@niaid.nih.gov", role="aut"), person("Michael", "Fay", email="mfay@niaid.nih.gov", role=c("aut")), person("Michal", "Juraska", email="mjuraska@fredhutch.org", role=c("aut", "cre")))
-Description: Compares performance of placebo crossover and standard non-crossover two-arm vaccine efficacy trial designs with two periods of participant follow-up in terms of statistical power to detect waning efficacy in period 2, power to detect vaccine harm in period 2, and the sample size required to achieve the same power for each hypothesis test in period 2, as described in Follmann et al. (2020) <doi: ...>.
+Description: Considering a two-arm placebo-controlled vaccine efficacy trial with two periods of participant follow-up (period 1 and 2), computations are implemented for comparing the performance of a placebo crossover in period 2 design with that of a standard non-crossover design. Comparisons between the two trial designs in terms of statistical power to detect waning efficacy in period 2, power to detect vaccine harm in period 2 (e.g., due to vaccine-associated enhanced disease), and the sample size ratio yielding the same power for each aforementioned test, are available as described in Follmann et al. (2020) <doi: ...>.
 URL: https://github.com/mjuraska/plaXdesign
 BugReports: https://github.com/mjuraska/plaXdesign/issues
 License: GPL-2
