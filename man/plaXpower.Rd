@@ -19,17 +19,17 @@ plaXpower(
 \method{print}{plaXpower}(x, digits = 2, ...)
 }
 \arguments{
-\item{theta1}{either a scalar or a numeric vector (same choise is required for both \code{theta1} and \code{theta2}) specifying the Poisson mean event count(s) in the original placebo arm in period 1 in the standard design. If a scalar is specified, the same mean count in period 1 is assumed in all scenarios described by \code{ve1} and \code{ve2}. If a vector, it must be of the same length as \code{ve1} and \code{ve2}, with matching components treated as a single trial scenario.}
+\item{theta1}{either a scalar or a numeric vector (same choice is required for both \code{theta1} and \code{theta2}) specifying the Poisson mean event count(s) in the original placebo arm in period 1 in the standard design. If a scalar is specified, the same mean event count in period 1 is assumed in all scenarios described by \code{ve1} and \code{ve2}. If a vector, it must be of the same length as \code{ve1} and \code{ve2}, with matching components treated as a single trial scenario.}
 
-\item{theta2}{either a scalar or a numeric vector specifying the Poisson mean event count in the original placebo arm in period 2 in the standard design. If a scalar is specified, the same mean count in period 2 is assumed in all scenarios described by \code{ve1} and \code{ve2}. If a vector, it must be of the same length as \code{ve1} and \code{ve2}, with matching components treated as a single trial scenario.}
+\item{theta2}{either a scalar or a numeric vector specifying the Poisson mean event count in the original placebo arm in period 2 in the standard design. If a scalar is specified, the same mean event count in period 2 is assumed in all scenarios described by \code{ve1} and \code{ve2}. If a vector, it must be of the same length as \code{ve1} and \code{ve2}, with matching components treated as a single trial scenario.}
 
 \item{ve1}{a numeric vector specifying different scenarios of vaccine efficacy in period 1 defined as 1 minus the ratio (original vaccine/original placebo) of mean event counts}
 
 \item{ve2}{a numeric vector specifying different scenarios of vaccine efficacy in period 2 defined as 1 minus the ratio (original vaccine/original placebo) of mean event counts. Vectors \code{ve1} and \code{ve2} must be of equal length, with matching components of \code{ve1} and \code{ve2} treated as a single trial scenario.}
 
-\item{method}{a character string specifying the computational method. The default option is \code{"analytical"}, which assumes that the mean event counts and VE levels in both arms and time periods and in both designs are known. The alternative option is \code{"simulation"}, which first randomly samples event counts from Poisson distributions defined by \code{theta1}, \code{theta2}, \code{ve1}, and \code{ve2}, and then uses the data to estimate VE and the variance. Only the first character of the method is necessary.}
+\item{method}{a character string specifying the computational method. The default option is \code{"analytical"}, which assumes that the mean event counts and VE levels in both arms and time periods and in both designs are known. The alternative option is \code{"simulation"}, which first randomly samples independent event counts from Poisson distributions defined by \code{theta1}, \code{theta2}, \code{ve1}, and \code{ve2}, and then uses the data to estimate VE and the variance. Only the first character of the method is necessary.}
 
-\item{alpha}{one-sided nominal significance level (0.025 by default)}
+\item{alpha}{one-sided nominal significance level (0.025 by default) of the hypothesis tests for detecting waning efficacy and vaccine harm in period 2}
 
 \item{iter}{the number of Monte-Carlo iterations applied for the \code{"simulation"} method (\eqn{10^3} by default)}
 
@@ -48,16 +48,16 @@ An object of class \code{plaXpower}, which is a data frame with the following co
 \item \code{theta2}: repeats the input argument \code{theta2}
 \item \code{ve1}: repeats the input argument \code{ve1}
 \item \code{ve2}: repeats the input argument \code{ve2}
-\item \code{ssRatioWaneXstd}: the sample size ratio (placebo crossover/standard) that ensures the same power to detect waning VE
-\item \code{ssRatioHarmXstd}: the sample size ratio (placebo crossover/standard) that ensures the same power to detect vaccine harm
 \item \code{powerWaneX}: power to detect waning VE in the placebo crossover design
 \item \code{powerWaneStd}: power to detect waning VE in the standard non-crossover design
-\item \code{powerHarmX}: power to detect vaccine harm in the placebo crossover design
-\item \code{powerHarmStd}: power to detect vaccine harm in the standard non-crossover design
+\item \code{powerHarmX}: power to detect vaccine harm in period 2 in the placebo crossover design
+\item \code{powerHarmStd}: power to detect vaccine harm in period 2 in the standard non-crossover design
+\item \code{ssRatioWaneXstd}: the sample size ratio (placebo crossover/standard) that ensures the same power to detect waning VE
+\item \code{ssRatioHarmXstd}: the sample size ratio (placebo crossover/standard) that ensures the same power to detect vaccine harm in period 2
 }
 }
 \description{
-Considering two periods of participant follow-up with associated levels of vaccine efficacy \eqn{VE_1} and \eqn{VE_2}, \code{plaXpower} computes for both a placebo crossover and standard non-crossover design (i) power to reject the null hypothesis \eqn{H_0: VE_1 = VE_2} in favor of the one-sided alternative hypothesis of waning VE, i.e., \eqn{H_1: VE_1 > VE_2}, (ii) power to reject the null hypothesis \eqn{H_0: VE_2 \ge 0} in favor of the one-sided alternative hypothesis of vaccine harm, i.e., \eqn{H_1: VE_2 < 0}, and (iii) for each hypothesis test, the sample size ratio (placebo crossover/standard) required to achieve the same power. The event of interest is assumed to be rare, with the event count following a Poisson distribution in each arm and time period. The vaccine administered in period 2 is assumed to have equal VE as in period 1.
+Considering a two-arm vaccine efficacy trial with allocation ratio 1:1 and two periods of participant follow-up with associated levels of vaccine efficacy \eqn{VE_1} and \eqn{VE_2}, \code{plaXpower} computes for both a placebo crossover and standard non-crossover design (i) power to reject the null hypothesis \eqn{H_0: VE_1 = VE_2} in favor of the one-sided alternative hypothesis of waning VE, i.e., \eqn{H_1: VE_1 > VE_2}, (ii) power to reject the null hypothesis \eqn{H_0: VE_2 \ge 0} in favor of the one-sided alternative hypothesis of vaccine harm, i.e., \eqn{H_1: VE_2 < 0}, and (iii) for each hypothesis test, the sample size ratio (placebo crossover/standard) required to achieve the same power. The event of interest is assumed to be rare, with the event count following a Poisson distribution in each arm and time period. In each arm, the event counts in different time periods are assumed to be independent. The vaccine administered in period 2 is assumed to have equal VE as in period 1.
 }
 \examples{
 # analytical method
