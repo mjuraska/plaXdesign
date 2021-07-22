@@ -1,5 +1,5 @@
 ## plaXdesign: Assessing vaccine durability and harm following placebo crossover in two-arm vaccine efficacy trials
-`plaXdesign` is an R package implementing sample size and power calculations presented in Follmann, Fintzi, Fay et al. (2021), Assessing durability of vaccine effect following blinded crossover in COVID-19 vaccine efficacy trials.
+`plaXdesign` is an R package implementing sample size and power calculations presented in [Follmann, Fintzi, Fay et al. (2021), A deferred-vaccination design to assess durability of COVID-19 vaccine effect after the placebo group is vaccinated](https://www.acpjournals.org/doi/10.7326/M20-8149).
 
 To install the package, first install the package `devtools` by running `install.packages("devtools")` and then run 
 ```
